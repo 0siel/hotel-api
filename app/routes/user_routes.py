@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from app.models import User, db
 from flask_jwt_extended import create_access_token
 from app.utils.auth_helpers import role_required
+from flask_jwt_extended import get_jwt_identity
+import json
 
 bp = Blueprint('user_routes', __name__)
 
@@ -52,10 +54,8 @@ def register():
 
     return jsonify({"message": f"{user_type.capitalize()} user registered successfully"}), 201
 
-
 @bp.route('/login', methods=['POST'])
 def login():
-    """Authenticate a user and return a JWT."""
     data = request.json
     email = data.get('email')
     password = data.get('password')
@@ -64,8 +64,8 @@ def login():
     if not user or not user.check_password(password):
         return jsonify({"message": "Invalid credentials"}), 401
 
-    # Create a JWT token with user identity and role
-    token = create_access_token(identity={"id": user.id, "role": user.type})
+    # Serialize the dictionary to a string for the identity field
+    token = create_access_token(identity=json.dumps({"id": user.id, "role": user.type}))
     return jsonify({"access_token": token}), 200
 
 @bp.route('/', methods=['GET'])

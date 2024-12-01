@@ -33,7 +33,6 @@ class Task(db.Model):
     status = db.Column(db.Enum('pending', 'in_progress', 'completed', name='task_status'), nullable=False)
     user_assigned = db.Column(db.Integer, db.ForeignKey('user.id'))
     assigned_user = db.relationship('User', backref='tasks')
-
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -41,6 +40,7 @@ class Event(db.Model):
     date = db.Column(db.Date, nullable=False)
     time = db.Column(db.Time, nullable=False)
     location = db.Column(db.String(100), nullable=False)
+    image = db.Column(db.String(255), nullable=True)  # Add image column
 
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
