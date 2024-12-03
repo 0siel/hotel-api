@@ -4,9 +4,25 @@ from app.utils.auth_helpers import role_required
 
 bp = Blueprint('room_routes', __name__)
 
+@bp.before_request
+def log_request_info():
+    print(f"Headers: {request.headers}")
+    print(f"Body: {request.get_data()}")
+
+
 @bp.route('/create', methods=['POST'])
 @role_required(['admin'])
 def create_room():
+    """Create a new room."""
+    """Create a new room."""
+    try:
+        print(f"Raw Data: {request.data}")  # Log raw request body
+        data = request.json
+        print(f"Parsed JSON: {data}")  # Debug log
+    except Exception as e:
+        print(f"Error parsing JSON: {e}")
+        return jsonify({"message": "Invalid JSON format"}), 400
+    
     """Create a new room."""
     data = request.json
     name = data.get('name')
